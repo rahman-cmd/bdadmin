@@ -3,6 +3,7 @@ import { Toast } from "../../util/Toast";
 import {
   SET_BD_ADMIN,
   UNSET_BD_ADMIN,
+  UPDATE_BD_ADMIN_PROFILE,
   CREATE_AGENCY,
   UPDATE_AGENCY_NAME,
   GET_BD_AGENCIES,
