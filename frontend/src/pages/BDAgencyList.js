@@ -177,22 +177,36 @@ export default function BDAgencyList() {
                           </td>
                           <td className="px-2 md:px-5 py-2 md:py-4 align-middle border-t border-dark-border">
                             <div className="flex items-center justify-center">
-                              <label className="switch">
+                              <label className="relative inline-flex items-center cursor-pointer">
                                 <input
                                   type="checkbox"
                                   checked={agency?.isActive}
                                   onChange={() => handleIsTop(agency?._id)}
+                                  className="sr-only peer"
                                 />
-                                <span className="slider">
-                                  <p
-                                    className="text-xs text-black font-medium absolute left-1/2 -translate-x-1/2 z-10 pointer-events-none"
-                                    style={{
-                                      marginLeft: `${agency?.isActive ? "-24px" : "35px"}`,
-                                    }}
-                                  >
-                                    {agency?.isActive ? "Yes" : "No"}
-                                  </p>
-                                </span>
+                                <div className={`
+                                  relative w-[70px] h-[32px] rounded-lg transition-all duration-300 ease-in-out
+                                  ${agency?.isActive 
+                                    ? 'bg-[#ada6f2]' 
+                                    : 'bg-[#86c1ed]'
+                                  }
+                                  flex items-center justify-between px-2
+                                `}>
+                                  <span className={`
+                                    text-xs font-medium transition-all duration-300
+                                    ${agency?.isActive ? 'text-white' : 'text-transparent'}
+                                  `}>
+                                    {agency?.isActive ? 'Yes' : 'No'}
+                                  </span>
+                                  <div className={`
+                                    absolute w-[24px] h-[24px] bg-white rounded transition-all duration-300 ease-in-out
+                                    ${agency?.isActive 
+                                      ? 'translate-x-[42px]' 
+                                      : 'translate-x-0'
+                                    }
+                                    shadow-md
+                                  `}></div>
+                                </div>
                               </label>
                             </div>
                           </td>
@@ -201,7 +215,7 @@ export default function BDAgencyList() {
                               <Tooltip title="Edit">
                                 <button
                                   type="button"
-                                  className="bg-[#ada6f2] hover:bg-[#ada6f2]/90 text-white text-xs md:text-sm py-1.5 md:py-2 px-3 md:px-4 rounded-md transition-colors shadow-sm"
+                                  className="bg-[#ada6f2] hover:bg-[#ada6f2]/90 text-white text-xs md:text-sm py-2 px-3 md:px-4 rounded-lg transition-colors shadow-sm flex items-center justify-center"
                                   onClick={() => handleEdit(agency)}
                                 >
                                   <i className="fa fa-edit text-sm md:text-base"></i>
