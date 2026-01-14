@@ -36,8 +36,12 @@ function App() {
     // If URL has id parameter, store it and navigate to dashboard (like agency)
     if (id) {
       localStorage.setItem("bdAdminId", id);
-      navigate("/bdadmin/dashboard", { replace: true });
-    } else if (localStorage.getItem("bdAdminId")) {
+      // Only redirect to dashboard if we're on root or /bdadmin path
+      if (location.pathname === "/" || location.pathname === "/bdadmin") {
+        navigate("/bdadmin/dashboard", { replace: true });
+      }
+    } else if (localStorage.getItem("bdAdminId") && (location.pathname === "/" || location.pathname === "/bdadmin")) {
+      // Only redirect if we're on root or /bdadmin path, not if already on a specific route
       navigate("/bdadmin/dashboard", { replace: true });
     }
 
@@ -45,7 +49,7 @@ function App() {
     if (uniqueId && bdId && !isAuth) {
       dispatch(login({ uniqueId, bdId }));
     }
-  }, [location, dispatch, navigate, isAuth]);
+  }, [location.search, dispatch, navigate, isAuth]); // Only depend on location.search, not full location
 
   return (
     <div className="App">
