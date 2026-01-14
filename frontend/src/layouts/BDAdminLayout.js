@@ -100,10 +100,12 @@ export default function BDAdminLayout() {
         <h2 className="text-danger text-xl font-bold mb-5 flex items-center justify-center py-2">
           BD Admin
         </h2>
-        {bdAdmin && (
+        {bdAdmin && bdAdmin.name && (
           <div className="p-2.5 mb-5 bg-white/5 rounded-lg text-xs text-[#EAF0FF]">
             <div className="font-bold mb-1">{bdAdmin.name}</div>
-            <div className="text-text-muted text-[11px]">{bdAdmin.email}</div>
+            {bdAdmin.user && (
+              <div className="text-text-muted text-[11px]">ID: {bdAdmin.user.uniqueId || bdAdmin.bdId}</div>
+            )}
           </div>
         )}
         {navItems.map((nav) => item(nav, true))}

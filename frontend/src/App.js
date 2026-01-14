@@ -36,21 +36,14 @@ function App() {
     // If URL has id parameter, store it and navigate to dashboard (like agency)
     if (id) {
       localStorage.setItem("bdAdminId", id);
-      if (!isAuth) {
-        // If not authenticated, user needs to login with uniqueId and bdId
-        // For now, just navigate - login will be handled separately
-        navigate("/bdadmin/dashboard", { replace: true });
-      }
+      navigate("/bdadmin/dashboard", { replace: true });
+    } else if (localStorage.getItem("bdAdminId")) {
+      navigate("/bdadmin/dashboard", { replace: true });
     }
 
     // If URL has uniqueId and bdId, attempt login (like agency with uniqueId and agencyCode)
     if (uniqueId && bdId && !isAuth) {
       dispatch(login({ uniqueId, bdId }));
-    }
-
-    // If bdAdminId exists in localStorage and authenticated, ensure we're on dashboard
-    if (localStorage.getItem("bdAdminId") && isAuth && location.pathname === "/bdadmin") {
-      navigate("/bdadmin/dashboard", { replace: true });
     }
   }, [location, dispatch, navigate, isAuth]);
 

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { getAgencyHostStats, getBDAgencies, openAgencyDialog } from "../store/agencyAdmin/action";
+import { getAgencyHostStats, getBDAgencies, openAgencyDialog, getBdAdminProfile } from "../store/agencyAdmin/action";
 import { useLocation } from "react-router-dom";
 import AgencyDialog from "../component/dialog/AgencyDialog";
 
@@ -21,10 +21,14 @@ export default function AgencyDashboard() {
   const { agencies, agencyHostStats, dialog } = useSelector((state) => state.agencyAdmin);
   const [selectedAgencyId, setSelectedAgencyId] = useState("");
   const isDashboard = location.pathname === "/bdadmin/dashboard";
+  const bdAdminId = localStorage.getItem("bdAdminId");
 
   useEffect(() => {
+    if (bdAdminId) {
+      dispatch(getBdAdminProfile(bdAdminId));
+    }
     dispatch(getBDAgencies(1, 100));
-  }, [dispatch]);
+  }, [dispatch, bdAdminId]);
 
   useEffect(() => {
     if (selectedAgencyId) {

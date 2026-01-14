@@ -37,13 +37,29 @@ export const login = (data) => (dispatch) => {
     });
 };
 
-// Get BD Admin Profile
+// Get BD Admin Profile (with token - for authenticated requests)
 export const getProfile = () => (dispatch) => {
   axios
     .get(`bdAdmin/profile?key=${key}`)
     .then((res) => {
       if (res.data.status) {
-        // Profile loaded
+        dispatch({ type: UPDATE_BD_ADMIN_PROFILE, payload: res.data.data });
+      } else {
+        Toast("error", res.data.message);
+      }
+    })
+    .catch((error) => {
+      console.log("error", error.message);
+    });
+};
+
+// Get BD Admin Profile by ID (for URL parameter access - like Agency)
+export const getBdAdminProfile = (bdAdminId) => (dispatch) => {
+  axios
+    .get(`bdAdmin/getBdAdminProfile?key=${key}&bdAdminId=${bdAdminId}`)
+    .then((res) => {
+      if (res.data.status) {
+        dispatch({ type: UPDATE_BD_ADMIN_PROFILE, payload: res.data.data });
       } else {
         Toast("error", res.data.message);
       }
