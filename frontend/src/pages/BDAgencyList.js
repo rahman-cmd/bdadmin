@@ -176,34 +176,38 @@ export default function BDAgencyList() {
                             {dayjs(agency?.createdAt).format("DD MMM, YYYY")}
                           </td>
                           <td className="px-2 md:px-5 py-2 md:py-4 align-middle border-t border-dark-border">
-                            <label className="switch">
-                              <input
-                                type="checkbox"
-                                checked={agency?.isActive}
-                                onChange={() => handleIsTop(agency?._id)}
-                              />
-                              <span className="slider">
-                                <p
-                                  className="text-xs text-black mt-1.5 absolute left-1/2 -translate-x-1/2"
-                                  style={{
-                                    marginLeft: `${agency?.isActive ? "-24px" : "35px"}`,
-                                  }}
-                                >
-                                  {agency?.isActive ? "Yes" : "No"}
-                                </p>
-                              </span>
-                            </label>
+                            <div className="flex items-center justify-center">
+                              <label className="switch">
+                                <input
+                                  type="checkbox"
+                                  checked={agency?.isActive}
+                                  onChange={() => handleIsTop(agency?._id)}
+                                />
+                                <span className="slider">
+                                  <p
+                                    className="text-xs text-black font-medium absolute left-1/2 -translate-x-1/2 z-10 pointer-events-none"
+                                    style={{
+                                      marginLeft: `${agency?.isActive ? "-24px" : "35px"}`,
+                                    }}
+                                  >
+                                    {agency?.isActive ? "Yes" : "No"}
+                                  </p>
+                                </span>
+                              </label>
+                            </div>
                           </td>
                           <td className="px-2 md:px-5 py-2 md:py-4 align-middle border-t border-dark-border">
-                            <Tooltip title="Edit">
-                              <button
-                                type="button"
-                                className="bg-info hover:bg-info/90 text-white text-xs md:text-sm py-1 md:py-1.5 px-2 md:px-3 rounded transition-colors"
-                                onClick={() => handleEdit(agency)}
-                              >
-                                <i className="fa fa-edit text-sm md:text-lg"></i>
-                              </button>
-                            </Tooltip>
+                            <div className="flex items-center justify-center">
+                              <Tooltip title="Edit">
+                                <button
+                                  type="button"
+                                  className="bg-[#ada6f2] hover:bg-[#ada6f2]/90 text-white text-xs md:text-sm py-1.5 md:py-2 px-3 md:px-4 rounded-md transition-colors shadow-sm"
+                                  onClick={() => handleEdit(agency)}
+                                >
+                                  <i className="fa fa-edit text-sm md:text-base"></i>
+                                </button>
+                              </Tooltip>
+                            </div>
                           </td>
                         </tr>
                       );
