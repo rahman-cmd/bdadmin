@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta name="description" content="BD Admin Panel" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              primary: '#86c1ed',
+              secondary: '#e9f0f2',
+              success: '#83d8ae',
+              danger: '#e8538f',
+              warning: '#fad292',
+              info: '#ada6f2',
+              dark: {
+                DEFAULT: '#181821',
+                card: '#1f1f2b',
+                border: '#262635',
+              },
+              text: {
+                DEFAULT: '#9a9cab',
+                muted: '#7d7f8c',
+              },
+              sidebar: '#3c134e',
+            },
+            fontFamily: {
+              sans: ['Poppins', 'sans-serif'],
+            },
+            borderRadius: {
+              'custom': '5px',
+            },
+          },
+        },
+      }
+    </script>
+    <title>BD Admin</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+  </body>
+</html>

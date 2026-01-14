@@ -1,0 +1,197 @@
+/* Custom Scrollbar Styles */
+.scrollbar-thin::-webkit-scrollbar {
+  height: 1px;
+  width: 8px;
+  border: 1px solid #d5d5d5;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #181821;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #e8538f;
+}
+
+.scrollbar-sidebar::-webkit-scrollbar {
+  height: 0px;
+  width: 4px;
+  border: 1px solid #d5d5d5;
+}
+
+.scrollbar-sidebar::-webkit-scrollbar-track {
+  background: #181821;
+}
+
+.scrollbar-sidebar::-webkit-scrollbar-thumb {
+  background: #262635;
+}
+
+/* Material-UI Backdrop */
+.MuiBackdrop-root {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+/* Material-UI Paper */
+.MuiPaper-root {
+  background-color: #161622 !important;
+}
+
+/* Material-UI Typography */
+.MuiTypography-colorInherit {
+  color: #91a3b0 !important;
+}
+
+.MuiSelect-select {
+  color: #91a3b0 !important;
+}
+
+.MuiSelect-icon {
+  color: #91a3b0 !important;
+}
+
+.MuiIconButton-root.Mui-disabled {
+  color: #9a9cab !important;
+}
+
+.MuiIconButton-root {
+  color: #86c1ed !important;
+}
+
+/* Switch/Toggle Styles */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 58px;
+  height: 32px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #86c1ed;
+  transition: all 0.4s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 24px;
+  width: 24px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: all 0.4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #ada6f2;
+}
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #ada6f2;
+}
+
+input:checked + .slider:before {
+  transform: translateX(26px);
+}
+
+.slider p {
+  font-size: 12px;
+  color: #000;
+  margin-top: 6px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+input:checked + .slider p {
+  margin-left: -24px;
+}
+
+input:not(:checked) + .slider p {
+  margin-left: 35px;
+}
+
+/* Pagination */
+.page-link {
+  border-radius: 50%;
+  padding: 5px 13px;
+}
+
+.page-item {
+  padding: 5px;
+}
+
+.page-item.active .page-link {
+  z-index: 1;
+  color: #fff !important;
+  background-color: #e8538f;
+  border-color: #e8538f;
+}
+
+.page-link:focus {
+  box-shadow: none;
+}
+
+/* Table Responsive */
+.table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Date Range Picker */
+.daterangepicker,
+.daterangepicker .calendar-table,
+.daterangepicker td.off {
+  color: #9a9cab;
+  background-color: #1f1f2b !important;
+  border: 1px solid #1f1f2b !important;
+}
+
+.daterangepicker td.active,
+.daterangepicker td.in-range,
+.daterangepicker td.available:hover,
+.daterangepicker th.available:hover {
+  background-color: #181821 !important;
+  border-color: transparent;
+  color: #9a9cab !important;
+}
+
+.applyBtn {
+  background-color: #ada6f2 !important;
+}
+
+.cancelBtn {
+  color: #9a9cab !important;
+}
+
+/* React Select */
+.css-d7l1ni-option:active {
+  color: #000 !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .MuiDialog-paper {
+    margin: 16px !important;
+    max-width: calc(100% - 32px) !important;
+  }
+  
+  .MuiDialogContent-root {
+    padding: 16px !important;
+  }
+}
