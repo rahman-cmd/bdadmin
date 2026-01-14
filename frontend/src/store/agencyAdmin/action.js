@@ -72,8 +72,12 @@ export const getBdAdminProfile = (bdAdminId) => (dispatch) => {
 
 // Create Agency
 export const createAgency = (data) => (dispatch) => {
+  const bdAdminId = localStorage.getItem("bdAdminId");
+  const url = bdAdminId 
+    ? `bdAdmin/agency/create?key=${key}&bdAdminId=${bdAdminId}`
+    : `bdAdmin/agency/create?key=${key}`;
   axios
-    .post(`bdAdmin/agency/create?key=${key}`, data)
+    .post(url, data)
     .then((res) => {
       if (res.data.status) {
         Toast("success", "Agency created successfully");
@@ -93,8 +97,12 @@ export const createAgency = (data) => (dispatch) => {
 
 // Update Agency Name
 export const updateAgencyName = (agencyId, name) => (dispatch) => {
+  const bdAdminId = localStorage.getItem("bdAdminId");
+  const url = bdAdminId 
+    ? `bdAdmin/agency/updateName?key=${key}&bdAdminId=${bdAdminId}`
+    : `bdAdmin/agency/updateName?key=${key}`;
   axios
-    .patch(`bdAdmin/agency/updateName?key=${key}`, { agencyId, name })
+    .patch(url, { agencyId, name })
     .then((res) => {
       if (res.data.status) {
         Toast("success", "Agency name updated successfully");
@@ -113,9 +121,11 @@ export const updateAgencyName = (agencyId, name) => (dispatch) => {
 
 // Get BD Agencies
 export const getBDAgencies = (page = 1, limit = 20, search = "") => (dispatch) => {
+  const bdAdminId = localStorage.getItem("bdAdminId");
   const searchParam = search ? `&search=${search}` : "";
+  const bdAdminIdParam = bdAdminId ? `&bdAdminId=${bdAdminId}` : "";
   axios
-    .get(`bdAdmin/agency/getBDAgencies?key=${key}&start=${page}&limit=${limit}${searchParam}`)
+    .get(`bdAdmin/agency/getBDAgencies?key=${key}&start=${page}&limit=${limit}${searchParam}${bdAdminIdParam}`)
     .then((res) => {
       if (res.data.status) {
         dispatch({
@@ -137,8 +147,12 @@ export const getBDAgencies = (page = 1, limit = 20, search = "") => (dispatch) =
 
 // Search Agency by Code
 export const searchAgencyByCode = (code) => (dispatch) => {
+  const bdAdminId = localStorage.getItem("bdAdminId");
+  const url = bdAdminId 
+    ? `bdAdmin/agency/searchByCode?key=${key}&code=${code}&bdAdminId=${bdAdminId}`
+    : `bdAdmin/agency/searchByCode?key=${key}&code=${code}`;
   axios
-    .get(`bdAdmin/agency/searchByCode?key=${key}&code=${code}`)
+    .get(url)
     .then((res) => {
       if (res.data.status) {
         dispatch({
@@ -158,8 +172,12 @@ export const searchAgencyByCode = (code) => (dispatch) => {
 // Delete Agency
 export const deleteAgency = (agencyId) => (dispatch) => {
   if (window.confirm("Are you sure you want to delete this agency?")) {
+    const bdAdminId = localStorage.getItem("bdAdminId");
+    const url = bdAdminId 
+      ? `bdAdmin/agency/delete?key=${key}&agencyId=${agencyId}&bdAdminId=${bdAdminId}`
+      : `bdAdmin/agency/delete?key=${key}&agencyId=${agencyId}`;
     axios
-      .delete(`bdAdmin/agency/delete?key=${key}&agencyId=${agencyId}`)
+      .delete(url)
       .then((res) => {
         if (res.data.status) {
           Toast("success", "Agency deleted successfully");
@@ -179,8 +197,12 @@ export const deleteAgency = (agencyId) => (dispatch) => {
 
 // Get Agency Host Stats
 export const getAgencyHostStats = (agencyId) => (dispatch) => {
+  const bdAdminId = localStorage.getItem("bdAdminId");
+  const url = bdAdminId 
+    ? `bdAdmin/agency/hostStats?key=${key}&agencyId=${agencyId}&bdAdminId=${bdAdminId}`
+    : `bdAdmin/agency/hostStats?key=${key}&agencyId=${agencyId}`;
   axios
-    .get(`bdAdmin/agency/hostStats?key=${key}&agencyId=${agencyId}`)
+    .get(url)
     .then((res) => {
       if (res.data.status) {
         dispatch({
@@ -215,8 +237,12 @@ export const closeAgencyDialog = () => (dispatch) => {
 
 // Enable or Disable Agency
 export const enableDisableAgency = (agencyId) => (dispatch) => {
+  const bdAdminId = localStorage.getItem("bdAdminId");
+  const url = bdAdminId 
+    ? `bdAdmin/agency/activeOrNot?key=${key}&agencyId=${agencyId}&bdAdminId=${bdAdminId}`
+    : `bdAdmin/agency/activeOrNot?key=${key}&agencyId=${agencyId}`;
   axios
-    .patch(`bdAdmin/agency/activeOrNot?key=${key}&agencyId=${agencyId}`)
+    .patch(url)
     .then((res) => {
       if (res.data.status) {
         dispatch({ type: ENABLE_DISABLE_AGENCY, payload: res.data.data });
@@ -235,8 +261,10 @@ export const enableDisableAgency = (agencyId) => (dispatch) => {
 
 // Get BD Admin Agency History
 export const getBDAgencyHistory = (startDate, endDate, start, limit) => (dispatch) => {
+  const bdAdminId = localStorage.getItem("bdAdminId");
+  const bdAdminIdParam = bdAdminId ? `&bdAdminId=${bdAdminId}` : "";
   axios
-    .get(`bdAdmin/agency/history?key=${key}&startDate=${startDate}&endDate=${endDate}&start=${start}&limit=${limit}`)
+    .get(`bdAdmin/agency/history?key=${key}&startDate=${startDate}&endDate=${endDate}&start=${start}&limit=${limit}${bdAdminIdParam}`)
     .then((res) => {
       if (res.data.status) {
         dispatch({
