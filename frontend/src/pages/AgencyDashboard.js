@@ -4,17 +4,6 @@ import { getAgencyHostStats, getBDAgencies, openAgencyDialog, getBdAdminProfile 
 import { useLocation } from "react-router-dom";
 import AgencyDialog from "../component/dialog/AgencyDialog";
 
-const T = {
-  pageBg: "#FFFFFF",
-  text: "#000000",
-  sub: "#666666",
-  border: "#E0E0E0",
-  card: "#FFFFFF",
-  radius: 8,
-  metricsBg: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
-  gradientBtn: "linear-gradient(135deg, #E8538F 0%, #667eea 100%)",
-};
-
 export default function AgencyDashboard() {
   const dispatch = useDispatch();
   const location = useLocation();
@@ -52,218 +41,111 @@ export default function AgencyDashboard() {
     agencyMemberRefund: 0,
   };
 
+  const metricCards = [
+    {
+      label: "Reward Last Month",
+      value: `$${metrics.rewardLastMonth.toLocaleString()}`,
+      icon: "💰",
+      gradient: "from-yellow-500/20 to-orange-500/20",
+      borderColor: "border-yellow-500/30",
+    },
+    {
+      label: "Income Last Month",
+      value: `$${metrics.incomeLastMonth.toLocaleString()}`,
+      icon: "📊",
+      gradient: "from-blue-500/20 to-cyan-500/20",
+      borderColor: "border-blue-500/30",
+    },
+    {
+      label: "Reward This Month",
+      value: `$${metrics.rewardThisMonth.toLocaleString()}`,
+      icon: "⭐",
+      gradient: "from-purple-500/20 to-pink-500/20",
+      borderColor: "border-purple-500/30",
+    },
+    {
+      label: "Income This Month",
+      value: `$${metrics.incomeThisMonth.toLocaleString()}`,
+      icon: "💵",
+      gradient: "from-green-500/20 to-emerald-500/20",
+      borderColor: "border-green-500/30",
+    },
+    {
+      label: "Total Agency Agents",
+      value: metrics.totalAgencyAgents.toString(),
+      icon: "👥",
+      gradient: "from-indigo-500/20 to-violet-500/20",
+      borderColor: "border-indigo-500/30",
+    },
+    {
+      label: "Country Agent Income",
+      value: `$${metrics.inviteCountryAgentIncome.toLocaleString()}`,
+      icon: "🌍",
+      gradient: "from-teal-500/20 to-cyan-500/20",
+      borderColor: "border-teal-500/30",
+    },
+    {
+      label: "Agency Member Refund",
+      value: `$${metrics.agencyMemberRefund.toLocaleString()}`,
+      icon: "🔄",
+      gradient: "from-red-500/20 to-rose-500/20",
+      borderColor: "border-red-500/30",
+    },
+  ];
+
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: T.pageBg,
-        color: T.text,
-        paddingBottom: "80px",
-      }}
-    >
-      {/* Header Navigation */}
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: isDashboard ? "center" : "space-between",
-          padding: "16px 20px",
-          background: T.pageBg,
-          borderBottom: `1px solid ${T.border}`,
-          position: "sticky",
-          top: 0,
-          zIndex: 100,
-          background: "#fff",
-        }}
-      >
-        {isDashboard ? (
-          <h1 style={{ margin: 0, fontSize: "20px", fontWeight: "600", color: T.text }}>
-            BD Admin
-          </h1>
-        ) : (
-          <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
-            <button
-              onClick={() => window.history.back()}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                padding: "8px",
-                display: "flex",
-                alignItems: "center",
-              }}
-            >
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M19 12H5M12 19l-7-7 7-7" />
-              </svg>
-            </button>
-            <h1 style={{ margin: 0, fontSize: "20px", fontWeight: "600", color: T.text }}>BD</h1>
-          </div>
-        )}
+    <div className="min-h-screen text-white pb-4 md:pb-0">
+
+      {/* Header */}
+      <div className="mb-6 md:mb-8">
+        <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 bg-gradient-to-r from-danger via-info to-danger bg-clip-text text-transparent">
+          Dashboard Overview
+        </h1>
+        <p className="text-text-muted text-sm">Welcome back! Here's what's happening today.</p>
       </div>
 
-      {/* Key Metrics Section */}
-      <div
-        style={{
-          background: T.metricsBg,
-          margin: "20px",
-          borderRadius: T.radius,
-          padding: "20px",
-          color: "#FFFFFF",
-          boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-        }}
-      >
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-            gap: "16px",
-            marginBottom: "16px",
-          }}
-        >
-          <div>
-            <div style={{ fontSize: "12px", opacity: 0.9, marginBottom: "4px" }}>
-              Reward last month:
+      {/* Key Metrics Grid - Modern Card Design */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-6 md:mb-8">
+        {metricCards.map((card, index) => (
+          <div
+            key={index}
+            className={`bg-gradient-to-br ${card.gradient} backdrop-blur-sm rounded-2xl p-4 md:p-5 border ${card.borderColor} shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]`}
+          >
+            <div className="flex items-center justify-between mb-3">
+              <span className="text-2xl md:text-3xl">{card.icon}</span>
+              <div className="h-8 w-8 rounded-full bg-white/10 backdrop-blur-sm"></div>
             </div>
-            <div style={{ fontSize: "18px", fontWeight: "bold" }}>${metrics.rewardLastMonth}</div>
+            <div className="text-text-muted text-xs md:text-sm mb-1 font-medium">{card.label}</div>
+            <div className="text-xl md:text-2xl font-bold text-white">{card.value}</div>
           </div>
-          <div>
-            <div style={{ fontSize: "12px", opacity: 0.9, marginBottom: "4px" }}>
-              Income last month:
-            </div>
-            <div style={{ fontSize: "18px", fontWeight: "bold" }}>${metrics.incomeLastMonth}</div>
-          </div>
-        </div>
-
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
-            gap: "16px",
-            marginBottom: "16px",
-          }}
-        >
-          <div>
-            <div style={{ fontSize: "12px", opacity: 0.9, marginBottom: "4px" }}>
-              Reward this month:
-            </div>
-            <div style={{ fontSize: "18px", fontWeight: "bold" }}>${metrics.rewardThisMonth}</div>
-          </div>
-          <div>
-            <div style={{ fontSize: "12px", opacity: 0.9, marginBottom: "4px" }}>
-              Income this month:
-            </div>
-            <div style={{ fontSize: "18px", fontWeight: "bold" }}>${metrics.incomeThisMonth}</div>
-          </div>
-        </div>
-
-        <div style={{ marginBottom: "12px" }}>
-          <div style={{ fontSize: "12px", opacity: 0.9, marginBottom: "4px" }}>
-            Total number of agency agents:
-          </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold" }}>{metrics.totalAgencyAgents}</div>
-        </div>
-
-        <div style={{ marginBottom: "12px" }}>
-          <div style={{ fontSize: "12px", opacity: 0.9, marginBottom: "4px" }}>
-            Invite country agent income this month:
-          </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold" }}>
-            ${metrics.inviteCountryAgentIncome}
-          </div>
-        </div>
-
-        <div>
-          <div style={{ fontSize: "12px", opacity: 0.9, marginBottom: "4px" }}>
-            Agency member refund:
-          </div>
-          <div style={{ fontSize: "18px", fontWeight: "bold" }}>${metrics.agencyMemberRefund}</div>
-        </div>
+        ))}
       </div>
 
       {/* Agency Data Section */}
-      <div style={{ margin: "0 20px 20px" }}>
+      <div className="mb-6">
         {/* Section Header */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            marginBottom: "16px",
-            flexWrap: "wrap",
-            gap: "12px",
-          }}
-        >
-          <h2 style={{ margin: 0, fontSize: "18px", fontWeight: "600", color: T.text }}>
-            Agency Data
-          </h2>
-          <div style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 md:mb-6 gap-4">
+          <div>
+            <h2 className="text-xl md:text-2xl font-bold text-white mb-1">Agency Data</h2>
+            <p className="text-text-muted text-sm">Manage your agencies</p>
+          </div>
+          <div className="flex gap-3 flex-wrap">
             <button
               onClick={() => dispatch(openAgencyDialog())}
-              style={{
-                background: T.gradientBtn,
-                color: "#FFFFFF",
-                border: "none",
-                padding: "10px 20px",
-                borderRadius: T.radius,
-                fontSize: "14px",
-                fontWeight: "500",
-                cursor: "pointer",
-                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
-              }}
+              className="bg-gradient-to-r from-danger to-info text-white px-5 py-2.5 md:px-6 md:py-3 rounded-xl text-sm md:text-base font-medium shadow-lg hover:shadow-xl transition-all duration-200 active:scale-95 flex items-center gap-2"
             >
-              Add Agency
-            </button>
-            <button
-              style={{
-                background: "#FFFFFF",
-                color: T.text,
-                border: `1px solid ${T.border}`,
-                padding: "10px 20px",
-                borderRadius: T.radius,
-                fontSize: "14px",
-                fontWeight: "500",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-              }}
-            >
-              Today
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M6 9l6 6 6-6" />
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
               </svg>
+              Add Agency
             </button>
           </div>
         </div>
 
         {/* Search Bar */}
-        <div style={{ marginBottom: "16px" }}>
-          <div
-            style={{
-              position: "relative",
-              display: "flex",
-              alignItems: "center",
-            }}
-          >
+        <div className="mb-4 md:mb-6">
+          <div className="relative">
             <svg
               width="20"
               height="20"
@@ -273,107 +155,78 @@ export default function AgencyDashboard() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              style={{
-                position: "absolute",
-                left: "12px",
-                color: T.sub,
-              }}
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 text-text-muted"
             >
               <circle cx="11" cy="11" r="8" />
               <path d="m21 21-4.35-4.35" />
             </svg>
             <input
               type="text"
-              placeholder="Enter Agency ID"
-              style={{
-                width: "100%",
-                padding: "12px 12px 12px 40px",
-                borderRadius: T.radius,
-                border: `1px solid ${T.border}`,
-                fontSize: "14px",
-                outline: "none",
-                background: T.card,
-              }}
+              placeholder="Search by Agency ID or Name..."
+              className="w-full pl-12 pr-4 py-3 md:py-3.5 rounded-xl bg-dark-card border border-dark-border text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-danger/50 focus:border-danger transition-all text-sm md:text-base"
             />
           </div>
         </div>
 
-        {/* Table */}
-        <div
-          style={{
-            background: T.card,
-            borderRadius: T.radius,
-            border: `1px solid ${T.border}`,
-            overflow: "hidden",
-            boxShadow: "0 2px 4px rgba(0,0,0,0.05)",
-          }}
-        >
-          <div style={{ overflowX: "auto" }}>
-            <table style={{ width: "100%", borderCollapse: "collapse" }}>
+        {/* Table - Mobile Responsive */}
+        <div className="bg-dark-card rounded-2xl border border-dark-border overflow-hidden shadow-xl">
+          {/* Mobile Card View */}
+          <div className="block md:hidden">
+            {agencies.length === 0 ? (
+              <div className="p-8 text-center text-text-muted">
+                <svg width="48" height="48" className="mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+                <p className="text-sm">No agency data available</p>
+              </div>
+            ) : (
+              <div className="divide-y divide-dark-border">
+                {agencies.map((agency) => (
+                  <div key={agency._id} className="p-4 hover:bg-white/5 transition-colors">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex-1">
+                        <div className="font-semibold text-white text-sm mb-1">{agency.name}</div>
+                        <div className="text-text-muted text-xs">ID: {agency.agencyCode}</div>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-danger font-bold text-base">
+                          ${(agencyHostStats?.currentAgencyProgress || 0).toLocaleString()}
+                        </div>
+                        <div className="text-text-muted text-xs">Income</div>
+                      </div>
+                    </div>
+                    <div className="flex items-center justify-between pt-3 border-t border-dark-border">
+                      <div className="text-text-muted text-xs">
+                        <span className="text-white font-medium">{agencyHostStats?.totalHosts || 0}</span> Members
+                      </div>
+                      <button className="text-info text-xs font-medium hover:text-info/80">
+                        View Details →
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Table View */}
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full border-collapse">
               <thead>
-                <tr style={{ background: "#F5F5F5" }}>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: T.text,
-                      borderBottom: `1px solid ${T.border}`,
-                    }}
-                  >
-                    Agency ID
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: T.text,
-                      borderBottom: `1px solid ${T.border}`,
-                    }}
-                  >
-                    Agency Name
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "left",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: T.text,
-                      borderBottom: `1px solid ${T.border}`,
-                    }}
-                  >
-                    Member
-                  </th>
-                  <th
-                    style={{
-                      padding: "12px 16px",
-                      textAlign: "right",
-                      fontSize: "14px",
-                      fontWeight: "600",
-                      color: T.text,
-                      borderBottom: `1px solid ${T.border}`,
-                    }}
-                  >
-                    Income
-                  </th>
+                <tr className="bg-dark/50 border-b border-dark-border">
+                  <th className="px-5 py-4 text-left text-sm font-semibold text-white">Agency ID</th>
+                  <th className="px-5 py-4 text-left text-sm font-semibold text-white">Agency Name</th>
+                  <th className="px-5 py-4 text-left text-sm font-semibold text-white">Member</th>
+                  <th className="px-5 py-4 text-right text-sm font-semibold text-white">Income</th>
                 </tr>
               </thead>
               <tbody>
                 {agencies.length === 0 ? (
                   <tr>
-                    <td
-                      colSpan="4"
-                      style={{
-                        padding: "40px",
-                        textAlign: "center",
-                        color: T.sub,
-                        fontSize: "14px",
-                      }}
-                    >
+                    <td colSpan="4" className="px-5 py-12 text-center text-text-muted text-sm">
+                      <svg width="48" height="48" className="mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                      </svg>
                       No agency data available
                     </td>
                   </tr>
@@ -381,28 +234,19 @@ export default function AgencyDashboard() {
                   agencies.map((agency) => (
                     <tr
                       key={agency._id}
-                      style={{
-                        borderBottom: `1px solid ${T.border}`,
-                      }}
+                      className="border-b border-dark-border hover:bg-white/5 transition-colors"
                     >
-                      <td style={{ padding: "12px 16px", fontSize: "14px", color: T.text }}>
-                        {agency.agencyCode}
+                      <td className="px-5 py-4 text-sm text-white font-mono">{agency.agencyCode}</td>
+                      <td className="px-5 py-4 text-sm text-white">{agency.name}</td>
+                      <td className="px-5 py-4 text-sm text-text">
+                        <span className="inline-flex items-center gap-1">
+                          <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                          </svg>
+                          {agencyHostStats?.totalHosts || 0}
+                        </span>
                       </td>
-                      <td style={{ padding: "12px 16px", fontSize: "14px", color: T.text }}>
-                        {agency.name}
-                      </td>
-                      <td style={{ padding: "12px 16px", fontSize: "14px", color: T.sub }}>
-                        {agencyHostStats?.totalHosts || 0}
-                      </td>
-                      <td
-                        style={{
-                          padding: "12px 16px",
-                          fontSize: "14px",
-                          color: "#E8538F",
-                          textAlign: "right",
-                          fontWeight: "500",
-                        }}
-                      >
+                      <td className="px-5 py-4 text-sm text-danger font-semibold text-right">
                         ${(agencyHostStats?.currentAgencyProgress || 0).toLocaleString()}
                       </td>
                     </tr>

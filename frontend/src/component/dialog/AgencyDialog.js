@@ -251,29 +251,48 @@ export default function AgencyDialog() {
           "& .MuiDialog-paper": {
             margin: { xs: "16px", sm: "32px" },
             width: "100%",
+            background: "#1f1f2b",
+            borderRadius: "24px",
+            border: "1px solid rgba(255, 255, 255, 0.1)",
+            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
+          },
+          "& .MuiBackdrop-root": {
+            background: "rgba(0, 0, 0, 0.7)",
+            backdropFilter: "blur(8px)",
           }
         }}
       >
         <DialogTitle 
           id="responsive-dialog-title"
-          sx={{ position: "relative", paddingRight: "48px" }}
+          sx={{ 
+            position: "relative", 
+            paddingRight: { xs: "48px", md: "56px" },
+            paddingTop: { xs: "20px", md: "24px" },
+            paddingLeft: { xs: "20px", md: "24px" },
+            paddingBottom: "16px",
+            borderBottom: "1px solid rgba(255, 255, 255, 0.1)"
+          }}
         >
-          <span className="text-danger font-bold text-xl"> Agency </span>
+          <span className="text-danger font-bold text-xl md:text-2xl bg-gradient-to-r from-danger to-info bg-clip-text text-transparent"> Agency </span>
           <IconButton
             sx={{
               position: "absolute",
-              right: 8,
+              right: { xs: 12, md: 16 },
               top: "50%",
               transform: "translateY(-50%)",
-              padding: "4px",
+              padding: "8px",
+              color: "#e8538f",
+              "&:hover": {
+                background: "rgba(232, 83, 143, 0.1)",
+              }
             }}
           >
             <Tooltip title="Close">
-              <Cancel className="text-danger cursor-pointer" onClick={closePopup} />
+              <Cancel className="text-danger cursor-pointer" onClick={closePopup} sx={{ fontSize: { xs: "24px", md: "28px" } }} />
             </Tooltip>
           </IconButton>
         </DialogTitle>
-        <DialogContent className="p-4 md:p-6">
+        <DialogContent className="p-4 md:p-6" sx={{ padding: { xs: "20px", md: "24px" } }}>
           <div className="pt-1 px-1 pb-3">
             <div className="flex flex-col">
               <form className="w-full">
@@ -294,7 +313,7 @@ export default function AgencyDialog() {
                   {!dialogData && (
                     <div className="w-full mt-3">
                       <div className="mb-4">
-                        <label className="mb-2 block text-text">
+                        <label className="mb-2 block text-text text-sm md:text-base font-medium">
                           Unique Id of User
                         </label>
 
@@ -305,13 +324,13 @@ export default function AgencyDialog() {
                           options={data}
                           getOptionLabel={(option) => option.uniqueId}
                           formatOptionLabel={(option) => (
-                            <div className="flex items-center">
+                            <div className="flex items-center py-1">
                               <img
                                 src={option.image || Male}
                                 alt="country"
-                                className="h-[30px] w-[30px] rounded-full"
+                                className="h-[35px] w-[35px] rounded-full object-cover"
                               />
-                              <span className="ml-3">{option.uniqueId}</span>
+                              <span className="ml-3 text-sm md:text-base">{option.uniqueId}</span>
                             </div>
                           )}
                           onChange={(selectedOption) => {
@@ -320,12 +339,55 @@ export default function AgencyDialog() {
                           }}
                           onInputChange={(inputValue) => setSearch(inputValue)}
                           styles={{
+                            control: (provided, state) => ({
+                              ...provided,
+                              backgroundColor: "#1f1f2b",
+                              borderColor: state.isFocused ? "#e8538f" : "#262635",
+                              borderRadius: "12px",
+                              padding: "8px 4px",
+                              minHeight: "52px",
+                              boxShadow: state.isFocused ? "0 0 0 2px rgba(232, 83, 143, 0.2)" : "none",
+                              "&:hover": {
+                                borderColor: "#e8538f",
+                              },
+                            }),
                             menu: (provided) => ({
                               ...provided,
-                              maxHeight: "250px",
+                              backgroundColor: "#1f1f2b",
+                              border: "1px solid #262635",
+                              borderRadius: "12px",
+                              maxHeight: "300px",
                               overflowY: "auto",
+                              zIndex: 9999,
+                            }),
+                            option: (provided, state) => ({
+                              ...provided,
+                              backgroundColor: state.isSelected
+                                ? "rgba(232, 83, 143, 0.2)"
+                                : state.isFocused
+                                ? "rgba(255, 255, 255, 0.05)"
+                                : "transparent",
+                              color: state.isSelected ? "#fff" : "#9a9cab",
+                              padding: "12px 16px",
+                              "&:active": {
+                                backgroundColor: "rgba(232, 83, 143, 0.3)",
+                              },
+                            }),
+                            input: (provided) => ({
+                              ...provided,
+                              color: "#fff",
+                              fontSize: "16px",
+                            }),
+                            placeholder: (provided) => ({
+                              ...provided,
+                              color: "#7d7f8c",
+                            }),
+                            singleValue: (provided) => ({
+                              ...provided,
+                              color: "#fff",
                             }),
                           }}
+                          classNamePrefix="react-select"
                           components={{
                             MenuList: (props) => (
                               <div
@@ -371,11 +433,11 @@ export default function AgencyDialog() {
                     </div>
                   )}
                   <div className="w-full mt-3 mb-4">
-                    <label className="mb-2 block text-text">Name</label>
+                    <label className="mb-2 block text-text text-sm md:text-base font-medium">Name</label>
                     <input
                       type="text"
-                      className="w-full px-3 py-3 rounded-custom border border-dark-border bg-dark-card text-white text-sm focus:outline-none focus:ring-0"
-                      placeholder="Enter Name"
+                      className="w-full px-4 py-3.5 rounded-xl border border-dark-border bg-dark-card text-white text-base focus:outline-none focus:ring-2 focus:ring-danger/50 focus:border-danger transition-all"
+                      placeholder="Enter Agency Name"
                       required
                       value={name}
                       onKeyPress={handleKeyPress}
@@ -396,23 +458,20 @@ export default function AgencyDialog() {
                       }}
                     />
                     {errors.name && (
-                      <div className="ml-2 mt-1">
-                        {errors.name && (
-                          <div className="pl-1 text-left">
-                            <span className="text-red">{errors.name}</span>
-                          </div>
-                        )}
+                      <div className="ml-2 mt-2">
+                        <span className="text-danger text-sm">{errors.name}</span>
                       </div>
                     )}
                   </div>
                 </div>
 
-                <div className={`${mongoId ? "w-full" : "w-full"}`}>
+                  <div className={`${mongoId ? "w-full" : "w-full"}`}>
                   <div className="mt-2 mb-4">
-                    <label className="mb-2 block text-text">Mobile Number</label>
+                    <label className="mb-2 block text-text text-sm md:text-base font-medium">Mobile Number</label>
                     <input
-                      type="number"
-                      className="w-full px-3 py-3 rounded-custom border border-dark-border bg-dark-card text-white text-sm focus:outline-none focus:ring-0"
+                      type="tel"
+                      inputMode="numeric"
+                      className="w-full px-4 py-3.5 rounded-xl border border-dark-border bg-dark-card text-white text-base focus:outline-none focus:ring-2 focus:ring-danger/50 focus:border-danger transition-all"
                       placeholder="Enter Mobile Number"
                       required
                       value={mobileNumber}
@@ -434,23 +493,17 @@ export default function AgencyDialog() {
                       }}
                     />
                     {errors.mobileNumber && (
-                      <div className="ml-2 mt-1">
-                        {errors.mobileNumber && (
-                          <div className="pl-1 text-left">
-                            <span className="text-red">
-                              {errors.mobileNumber}
-                            </span>
-                          </div>
-                        )}
+                      <div className="ml-2 mt-2">
+                        <span className="text-danger text-sm">{errors.mobileNumber}</span>
                       </div>
                     )}
                   </div>
                 </div>
                 <div className="w-full mt-2">
                   <div className="mb-4">
-                    <label className="mb-2 block text-text">Bank Details</label>
+                    <label className="mb-2 block text-text text-sm md:text-base font-medium">Bank Details</label>
                     <textarea
-                      className="w-full px-3 py-3 rounded-custom border border-dark-border bg-dark-card text-white text-sm focus:outline-none focus:ring-0 resize-y"
+                      className="w-full px-4 py-3.5 rounded-xl border border-dark-border bg-dark-card text-white text-base focus:outline-none focus:ring-2 focus:ring-danger/50 focus:border-danger transition-all resize-y min-h-[100px]"
                       placeholder="Enter Bank Details"
                       required
                       rows={4}
@@ -473,14 +526,8 @@ export default function AgencyDialog() {
                       }}
                     />
                     {errors.bankDetails && (
-                      <div className="ml-2 mt-1">
-                        {errors.bankDetails && (
-                          <div className="pl-1 text-left">
-                            <span className="text-red">
-                              {errors.bankDetails}
-                            </span>
-                          </div>
-                        )}
+                      <div className="ml-2 mt-2">
+                        <span className="text-danger text-sm">{errors.bankDetails}</span>
                       </div>
                     )}
                   </div>
@@ -489,11 +536,12 @@ export default function AgencyDialog() {
                 <div className="flex flex-col md:flex-row mt-3 gap-3">
                   <div className={`${mongoId ? "w-full" : "w-full md:w-9/12"}`}>
                     <div className="mb-4">
-                      <label className="mb-2 block text-text text-sm md:text-base">Agency Code</label>
+                      <label className="mb-2 block text-text text-sm md:text-base font-medium">Agency Code</label>
                       <input
                         readOnly
-                        type="number"
-                        className="w-full px-3 py-2 md:py-3 rounded-custom border border-dark-border bg-dark-card text-white text-xs md:text-sm focus:outline-none focus:ring-0"
+                        type="text"
+                        inputMode="numeric"
+                        className="w-full px-4 py-3.5 rounded-xl border border-dark-border bg-dark-card/50 text-white text-base focus:outline-none focus:ring-2 focus:ring-danger/50 focus:border-danger transition-all font-mono"
                         placeholder="Enter Code"
                         required
                         value={code}
@@ -515,22 +563,18 @@ export default function AgencyDialog() {
                         }}
                       />
                       {errors.code && (
-                        <div className="ml-2 mt-1">
-                          {errors.code && (
-                            <div className="pl-1 text-left">
-                              <span className="text-red">{errors.code}</span>
-                            </div>
-                          )}
+                        <div className="ml-2 mt-2">
+                          <span className="text-danger text-sm">{errors.code}</span>
                         </div>
                       )}
                     </div>
                   </div>
 
                   {!mongoId && (
-                    <div className="w-full md:w-3/12 pl-0 flex justify-start md:justify-end items-end md:items-center mt-0 md:mt-[22.01px]">
+                    <div className="w-full md:w-3/12 flex justify-start md:justify-end items-end md:items-center">
                       <button
                         type="button"
-                        className="bg-info hover:bg-info/90 text-white text-xs md:text-sm py-2 px-3 md:px-4 rounded transition-colors w-full md:w-auto"
+                        className="bg-info/20 hover:bg-info/30 border border-info text-info font-medium py-3.5 px-4 rounded-xl transition-all duration-200 active:scale-95 w-full md:w-auto text-sm md:text-base"
                         onClick={createCode}
                       >
                         Auto Generate
@@ -538,17 +582,17 @@ export default function AgencyDialog() {
                     </div>
                   )}
                 </div>
-                <div className="mt-5 flex flex-col-reverse md:flex-row gap-2 md:gap-0 justify-end">
+                <div className="mt-6 flex flex-col-reverse sm:flex-row gap-3 justify-end pt-4 border-t border-dark-border">
                   <button
                     type="button"
-                    className="bg-transparent border border-info text-info hover:bg-info/10 px-4 md:px-6 py-2 md:py-3 rounded transition-colors text-sm md:text-base w-full md:w-auto"
+                    className="bg-transparent border border-info text-info hover:bg-info/10 px-6 py-3.5 rounded-xl transition-all duration-200 active:scale-95 text-base font-medium w-full sm:w-auto"
                     onClick={closePopup}
                   >
                     Close
                   </button>
                   <button
                     type="button"
-                    className="bg-danger hover:bg-danger/90 text-white px-4 md:px-6 py-2 md:py-3 rounded transition-colors text-sm md:text-base w-full md:w-auto md:ml-2"
+                    className="bg-gradient-to-r from-danger to-info hover:from-danger/90 hover:to-info/90 text-white px-6 py-3.5 rounded-xl transition-all duration-200 active:scale-95 text-base font-medium shadow-lg w-full sm:w-auto"
                     onClick={handleSubmit}
                   >
                     Submit
