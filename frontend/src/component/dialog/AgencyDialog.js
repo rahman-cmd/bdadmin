@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Dialog,
@@ -10,10 +10,12 @@ import {
 import { Cancel } from "@mui/icons-material";
 import { createAgency, closeAgencyDialog, updateAgencyName } from "../../store/agencyAdmin/action";
 import Male from "../../assets/images/male.png";
-import $ from "jquery";
 import InfiniteScroll from "react-infinite-scroll-component";
 import ReactSelect from "react-select";
 import { getCoinSellerUniqueId } from "../../store/coinSeller/action";
+
+/** Sent when creating agency; field hidden in BD Admin UI */
+const DEFAULT_AGENCY_BANK_DETAILS = "N/A";
 
 export default function AgencyDialog() {
   const dispatch = useDispatch();
@@ -21,13 +23,16 @@ export default function AgencyDialog() {
   const { coinSellerId } = useSelector((state) => state.coinSeller);
 
   const [data, setData] = useState([]);
+  /** Keeps full user row so value stays visible after search list reloads */
+  const [selectedUser, setSelectedUser] = useState(null);
   const [uniqueId, setUniqueId] = useState("");
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const [searchInput, setSearchInput] = useState("");
   const [mongoId, setMongoId] = useState("");
   const [name, setName] = useState("");
   const [mobileNumber, setMobileNumber] = useState("");
   const [code, setCode] = useState("");
-  const [bankDetails, setBankDetails] = useState("");
   const [start, setStart] = useState(1);
   const [limit] = useState(10);
   const [hasMore, setHasMore] = useState(true);
@@ -39,20 +44,22 @@ export default function AgencyDialog() {
     uniqueId: "",
     mobileNumber: "",
     code: "",
-    bankDetails: "",
   });
 
   useEffect(() => {
-    const fetchInitialData = () => {
-      setLoading(true);
-      setStart(1);
-      setData([]);
-      dispatch(getCoinSellerUniqueId(1, limit, search));
-      setLoading(false);
-    };
+    const timeout = setTimeout(() => {
+      setDebouncedSearch(search.trim());
+    }, 350);
+    return () => clearTimeout(timeout);
+  }, [search]);
 
-    fetchInitialData();
-  }, [search, limit]);
+  useEffect(() => {
+    if (dialogData) return;
+    setLoading(true);
+    setStart(1);
+    setData([]);
+    dispatch(getCoinSellerUniqueId(1, limit, debouncedSearch));
+  }, [debouncedSearch, limit, dispatch, dialogData]);
 
   useEffect(() => {
     if (coinSellerId?.length) {
@@ -81,6 +88,19 @@ export default function AgencyDialog() {
     }
   }, [coinSellerId, start, limit]);
 
+  const selectOptions = useMemo(() => {
+    if (!selectedUser) return data;
+    const id = selectedUser._id ? String(selectedUser._id) : null;
+    const uid = selectedUser.uniqueId != null ? String(selectedUser.uniqueId) : "";
+    const inList = data.some((o) => {
+      if (id && o._id && String(o._id) === id) return true;
+      if (uid && o.uniqueId != null && String(o.uniqueId) === uid) return true;
+      return false;
+    });
+    if (inList) return data;
+    return [selectedUser, ...data];
+  }, [data, selectedUser]);
+
   const fetchMoreData = () => {
     if (!loading && hasMore) {
       if (scrollRef.current) {
@@ -89,13 +109,9 @@ export default function AgencyDialog() {
       setLoading(true);
       const nextPage = start + 1;
       setStart(nextPage);
-      dispatch(getCoinSellerUniqueId(nextPage, limit, search));
+      dispatch(getCoinSellerUniqueId(nextPage, limit, debouncedSearch));
     }
   };
-
-  useEffect(() => {
-    setData(coinSellerId);
-  }, [coinSellerId]);
 
   useEffect(() => {
     if (dialogData) {
@@ -104,34 +120,32 @@ export default function AgencyDialog() {
       setUniqueId(dialogData?.uniqueId);
       setMobileNumber(dialogData?.mobile);
       setCode(dialogData?.agencyCode);
-      setBankDetails(dialogData?.bankDetails);
     }
   }, [dialogData]);
 
-  $(document).ready(function () {
-    $("img").bind("error", function () {
-      $(this).attr("src", Male);
-    });
-  });
-
-  useEffect(
-    () => () => {
+  useEffect(() => {
+    if (!open) {
       setError({
         name: "",
         mobileNumber: "",
         code: "",
         uniqueId: "",
-        bankDetails: "",
       });
       setMongoId("");
       setName("");
       setUniqueId("");
       setCode("");
       setMobileNumber("");
-      setBankDetails("");
-    },
-    [open]
-  );
+      setSearch("");
+      setDebouncedSearch("");
+      setSearchInput("");
+      setSelectedUser(null);
+      setData([]);
+      setStart(1);
+      setHasMore(true);
+      setLoading(false);
+    }
+  }, [open]);
 
   const createCode = () => {
     const randomChars = "0123456789";
@@ -168,12 +182,11 @@ export default function AgencyDialog() {
         return setError({ ...errors, name: "Name can't be a blank!" });
       }
       dispatch(updateAgencyName(mongoId, name));
-      closePopup();
       return;
     }
 
     // Create mode - validate all fields
-    if (!name || !code || !mobileNumber || !uniqueId || !bankDetails) {
+    if (!name || !code || !mobileNumber || !uniqueId) {
       const errors = {};
       if (!name) {
         errors.name = "Name can't be a blank!";
@@ -183,7 +196,6 @@ export default function AgencyDialog() {
       if (!code) {
         errors.code = "Code can't be a blank!";
       }
-      if (!bankDetails) errors.bankDetails = "Bank Details can't be a blank!";
 
       return setError({ ...errors });
     }
@@ -198,6 +210,13 @@ export default function AgencyDialog() {
       return setError({
         ...errors,
         code: "Minimum 5 Digits are Allowed!",
+      });
+    }
+
+    if (!/^\d{10,15}$/.test(mobileNumber)) {
+      return setError({
+        ...errors,
+        mobileNumber: "Mobile number must be 10 to 15 digits.",
       });
     }
 
@@ -224,11 +243,10 @@ export default function AgencyDialog() {
       uniqueId,
       agencyCode: code,
       mobile: mobileNumber,
-      bankDetails,
+      bankDetails: DEFAULT_AGENCY_BANK_DETAILS,
     };
 
     dispatch(createAgency(formData));
-    closePopup();
   };
 
   const closePopup = () => {
@@ -273,7 +291,9 @@ export default function AgencyDialog() {
             borderBottom: "1px solid rgba(255, 255, 255, 0.1)"
           }}
         >
-          <span className="text-danger font-bold text-xl md:text-2xl bg-gradient-to-r from-danger to-info bg-clip-text text-transparent"> Agency </span>
+          <span className="text-danger font-bold text-xl md:text-2xl bg-gradient-to-r from-danger to-info bg-clip-text text-transparent">
+            {mongoId ? "Edit Agency" : "Create Agency"}
+          </span>
           <IconButton
             sx={{
               position: "absolute",
@@ -314,30 +334,69 @@ export default function AgencyDialog() {
                     <div className="w-full mt-3">
                       <div className="mb-4">
                         <label className="mb-2 block text-text text-sm md:text-base font-medium">
-                          Unique Id of User
+                          Unique Id of User <span className="text-danger">*</span>
                         </label>
 
                         <ReactSelect
-                          value={data.find(
-                            (option) => option.uniqueId === uniqueId
-                          )}
-                          options={data}
-                          getOptionLabel={(option) => option.uniqueId}
-                          formatOptionLabel={(option) => (
+                          value={selectedUser}
+                          inputValue={searchInput}
+                          options={selectOptions}
+                          isSearchable
+                          isClearable
+                          blurInputOnSelect
+                          getOptionLabel={(option) =>
+                            option?.uniqueId != null ? String(option.uniqueId) : ""
+                          }
+                          getOptionValue={(option) =>
+                            option?._id != null
+                              ? String(option._id)
+                              : String(option?.uniqueId ?? "")
+                          }
+                          formatOptionLabel={(option, { context }) => (
                             <div className="flex items-center py-1">
                               <img
-                                src={option.image || Male}
-                                alt="country"
+                                src={option?.image || Male}
+                                alt=""
                                 className="h-[35px] w-[35px] rounded-full object-cover"
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = Male;
+                                }}
                               />
-                              <span className="ml-3 text-sm md:text-base">{option.uniqueId}</span>
+                              <span className="ml-3 text-sm md:text-base">
+                                {option?.uniqueId != null ? String(option.uniqueId) : "N/A"}
+                                {context === "menu" && option?.name ? (
+                                  <span className="ml-2 text-text-muted text-xs">
+                                    ({option.name})
+                                  </span>
+                                ) : null}
+                              </span>
                             </div>
                           )}
                           onChange={(selectedOption) => {
-                            setUniqueId(selectedOption.uniqueId);
+                            if (!selectedOption) {
+                              setSelectedUser(null);
+                              setUniqueId("");
+                              setSearchInput("");
+                              setSearch("");
+                              return;
+                            }
+                            setSelectedUser(selectedOption);
+                            setUniqueId(
+                              selectedOption.uniqueId != null
+                                ? String(selectedOption.uniqueId)
+                                : ""
+                            );
+                            setSearchInput("");
+                            setSearch("");
                             setError({ ...errors, uniqueId: "" });
                           }}
-                          onInputChange={(inputValue) => setSearch(inputValue)}
+                          onInputChange={(inputValue, actionMeta) => {
+                            if (actionMeta.action === "input-change") {
+                              setSearchInput(inputValue);
+                              setSearch(inputValue);
+                            }
+                          }}
                           styles={{
                             control: (provided, state) => ({
                               ...provided,
@@ -418,6 +477,9 @@ export default function AgencyDialog() {
                             ),
                           }}
                         />
+                        <p className="text-text-muted text-xs mt-2">
+                          Type at least 1 character to search user unique ID.
+                        </p>
                         {errors.uniqueId && (
                           <div className="ml-2 mt-1">
                             {errors.uniqueId && (
@@ -433,7 +495,7 @@ export default function AgencyDialog() {
                     </div>
                   )}
                   <div className="w-full mt-3 mb-4">
-                    <label className="mb-2 block text-text text-sm md:text-base font-medium">Name</label>
+                    <label className="mb-2 block text-text text-sm md:text-base font-medium">Name <span className="text-danger">*</span></label>
                     <input
                       type="text"
                       className="w-full px-4 py-3.5 rounded-xl border border-dark-border bg-dark-card text-white text-base focus:outline-none focus:ring-2 focus:ring-danger/50 focus:border-danger transition-all"
@@ -467,7 +529,7 @@ export default function AgencyDialog() {
 
                   <div className={`${mongoId ? "w-full" : "w-full"}`}>
                   <div className="mt-2 mb-4">
-                    <label className="mb-2 block text-text text-sm md:text-base font-medium">Mobile Number</label>
+                    <label className="mb-2 block text-text text-sm md:text-base font-medium">Mobile Number <span className="text-danger">*</span></label>
                     <input
                       type="tel"
                       inputMode="numeric"
@@ -477,9 +539,10 @@ export default function AgencyDialog() {
                       value={mobileNumber}
                       onKeyPress={handleKeyPress}
                       onChange={(e) => {
-                        setMobileNumber(e.target.value);
+                        const value = e.target.value.replace(/\D/g, "");
+                        setMobileNumber(value);
 
-                        if (!e.target.value) {
+                        if (!value) {
                           return setError({
                             ...errors,
                             mobileNumber: "mobileNumber can't be a blank!",
@@ -499,44 +562,11 @@ export default function AgencyDialog() {
                     )}
                   </div>
                 </div>
-                <div className="w-full mt-2">
-                  <div className="mb-4">
-                    <label className="mb-2 block text-text text-sm md:text-base font-medium">Bank Details</label>
-                    <textarea
-                      className="w-full px-4 py-3.5 rounded-xl border border-dark-border bg-dark-card text-white text-base focus:outline-none focus:ring-2 focus:ring-danger/50 focus:border-danger transition-all resize-y min-h-[100px]"
-                      placeholder="Enter Bank Details"
-                      required
-                      rows={4}
-                      value={bankDetails}
-                      onKeyPress={handleKeyPress}
-                      onChange={(e) => {
-                        setBankDetails(e.target.value);
-
-                        if (!e.target.value) {
-                          return setError({
-                            ...errors,
-                            bankDetails: "bankDetails can't be a blank!",
-                          });
-                        } else {
-                          return setError({
-                            ...errors,
-                            bankDetails: "",
-                          });
-                        }
-                      }}
-                    />
-                    {errors.bankDetails && (
-                      <div className="ml-2 mt-2">
-                        <span className="text-danger text-sm">{errors.bankDetails}</span>
-                      </div>
-                    )}
-                  </div>
-                </div>
 
                 <div className="flex flex-col md:flex-row mt-3 gap-3">
                   <div className={`${mongoId ? "w-full" : "w-full md:w-9/12"}`}>
                     <div className="mb-4">
-                      <label className="mb-2 block text-text text-sm md:text-base font-medium">Agency Code</label>
+                      <label className="mb-2 block text-text text-sm md:text-base font-medium">Agency Code <span className="text-danger">*</span></label>
                       <input
                         readOnly
                         type="text"
@@ -595,7 +625,7 @@ export default function AgencyDialog() {
                     className="bg-gradient-to-r from-danger to-info hover:from-danger/90 hover:to-info/90 text-white px-6 py-3.5 rounded-xl transition-all duration-200 active:scale-95 text-base font-medium shadow-lg w-full sm:w-auto"
                     onClick={handleSubmit}
                   >
-                    Submit
+                    {mongoId ? "Update Agency" : "Create Agency"}
                   </button>
                 </div>
               </form>

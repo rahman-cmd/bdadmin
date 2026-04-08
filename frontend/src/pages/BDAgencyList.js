@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getBDAgencies, enableDisableAgency, openAgencyDialog } from "../store/agencyAdmin/action";
-import { useNavigate, useLocation } from "react-router-dom";
 import AgencyDialog from "../component/dialog/AgencyDialog";
-import $ from "jquery";
 import Male from "../assets/images/male.png";
 import { Tooltip } from "@mui/material";
 import dayjs from "dayjs";
@@ -11,8 +9,6 @@ import Pagination from "./Pagination";
 
 export default function BDAgencyList() {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const location = useLocation();
   const { agencies, totalAgencies } = useSelector((state) => state.agencyAdmin);
   const [data, setData] = useState([]);
   const [activePage, setActivePage] = useState(1);
@@ -21,17 +17,11 @@ export default function BDAgencyList() {
 
   useEffect(() => {
     dispatch(getBDAgencies(activePage, rowsPerPage, search));
-  }, [activePage, rowsPerPage]);
+  }, [activePage, rowsPerPage, dispatch]);
 
   useEffect(() => {
     setData(agencies);
   }, [agencies]);
-
-  $(document).ready(function () {
-    $("img").bind("error", function () {
-      $(this).attr("src", Male);
-    });
-  });
 
   const handlePageChange = (pageNumber) => {
     setActivePage(pageNumber);
@@ -40,6 +30,11 @@ export default function BDAgencyList() {
   const handleRowsPerPage = (value) => {
     setActivePage(1);
     setRowsPerPage(value);
+  };
+
+  const handleSearch = () => {
+    setActivePage(1);
+    dispatch(getBDAgencies(1, rowsPerPage, search));
   };
 
   const handleOpen = () => {
@@ -112,18 +107,24 @@ export default function BDAgencyList() {
                   onKeyPress={(e) => {
                     if (e.key === "Enter") {
                       e.preventDefault();
-                      dispatch(getBDAgencies(activePage, rowsPerPage, search));
-                      setActivePage(1);
+                      handleSearch();
                     }
                   }}
                 />
+                <button
+                  type="button"
+                  onClick={handleSearch}
+                  className="absolute right-12 top-1/2 transform -translate-y-1/2 bg-danger/20 hover:bg-danger/30 text-danger px-3 py-1.5 rounded-lg text-xs md:text-sm transition-colors"
+                >
+                  Search
+                </button>
                 {search && (
                   <button
                     type="button"
                     onClick={() => {
                       setSearch("");
-                      dispatch(getBDAgencies(activePage, rowsPerPage, ""));
                       setActivePage(1);
+                      dispatch(getBDAgencies(1, rowsPerPage, ""));
                     }}
                     className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-white transition-colors"
                   >
@@ -151,6 +152,10 @@ export default function BDAgencyList() {
                         width="50px"
                         alt="agency"
                         src={agency?.image ? agency?.image : Male}
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = Male;
+                                }}
                         className="rounded-xl object-cover shadow-md"
                       />
                       <div className="flex-1 min-w-0">
@@ -242,6 +247,10 @@ export default function BDAgencyList() {
                                 width="45px"
                                 alt="app"
                                 src={agency?.image ? agency?.image : Male}
+                                onError={(e) => {
+                                  e.currentTarget.onerror = null;
+                                  e.currentTarget.src = Male;
+                                }}
                                 className="shadow-md border-2 border-white/20 rounded-xl object-cover"
                               />
                               <span className="ml-3 flex items-center text-sm text-white truncate max-w-[200px]">{agency?.name}</span>

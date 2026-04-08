@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAgencyHostStats, getBDAgencies, openAgencyDialog, getBdAdminProfile } from "../store/agencyAdmin/action";
-import { useLocation } from "react-router-dom";
 import AgencyDialog from "../component/dialog/AgencyDialog";
 
 export default function AgencyDashboard() {
   const dispatch = useDispatch();
-  const location = useLocation();
-  const { agencies, agencyHostStats, dialog } = useSelector((state) => state.agencyAdmin);
+  const { agencies, agencyHostStats } = useSelector((state) => state.agencyAdmin);
   const [selectedAgencyId, setSelectedAgencyId] = useState("");
-  const isDashboard = location.pathname === "/bdadmin/dashboard";
+  const [search, setSearch] = useState("");
   const bdAdminId = localStorage.getItem("bdAdminId");
 
   useEffect(() => {
@@ -25,10 +23,18 @@ export default function AgencyDashboard() {
     }
   }, [dispatch, selectedAgencyId]);
 
-  // Calculate totals from all agencies
+  const filteredAgencies = agencies.filter((agency) => {
+    const q = search.trim().toLowerCase();
+    if (!q) return true;
+    return (
+      String(agency?.agencyCode || "").toLowerCase().includes(q) ||
+      String(agency?.name || "").toLowerCase().includes(q)
+    );
+  });
+
+  // Calculate totals from all agencies list
   const totalAgencies = agencies.length;
-  const totalHosts = agencies.reduce((sum, agency) => sum + (agencyHostStats?.totalHosts || 0), 0);
-  const totalIncome = agencies.reduce((sum, agency) => sum + (agencyHostStats?.currentAgencyProgress || 0), 0);
+  const totalIncome = agencies.reduce((sum, agency) => sum + (agency?.totalCoin || 0), 0);
 
   // Mock data for metrics (replace with actual API data)
   const metrics = {
@@ -71,11 +77,18 @@ export default function AgencyDashboard() {
       borderColor: "border-green-500/30",
     },
     {
-      label: "Total Agency Agents",
+      label: "Total Agencies",
       value: metrics.totalAgencyAgents.toString(),
       icon: "👥",
       gradient: "from-indigo-500/20 to-violet-500/20",
       borderColor: "border-indigo-500/30",
+    },
+    {
+      label: "Selected Agency Hosts",
+      value: String(agencyHostStats?.totalHosts || 0),
+      icon: "🧑‍🤝‍🧑",
+      gradient: "from-sky-500/20 to-indigo-500/20",
+      borderColor: "border-sky-500/30",
     },
     {
       label: "Country Agent Income",
@@ -164,6 +177,8 @@ export default function AgencyDashboard() {
               type="text"
               placeholder="Search by Agency ID or Name..."
               className="w-full pl-12 pr-4 py-3 md:py-3.5 rounded-xl bg-dark-card border border-dark-border text-white placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-danger/50 focus:border-danger transition-all text-sm md:text-base"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
             />
           </div>
         </div>
@@ -172,7 +187,7 @@ export default function AgencyDashboard() {
         <div className="bg-dark-card rounded-2xl border border-dark-border overflow-hidden shadow-xl">
           {/* Mobile Card View */}
           <div className="block md:hidden">
-            {agencies.length === 0 ? (
+            {filteredAgencies.length === 0 ? (
               <div className="p-8 text-center text-text-muted">
                 <svg width="48" height="48" className="mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
@@ -181,7 +196,7 @@ export default function AgencyDashboard() {
               </div>
             ) : (
               <div className="divide-y divide-dark-border">
-                {agencies.map((agency) => (
+                {filteredAgencies.map((agency) => (
                   <div key={agency._id} className="p-4 hover:bg-white/5 transition-colors">
                     <div className="flex items-center justify-between mb-3">
                       <div className="flex-1">
@@ -190,17 +205,23 @@ export default function AgencyDashboard() {
                       </div>
                       <div className="text-right">
                         <div className="text-danger font-bold text-base">
-                          ${(agencyHostStats?.currentAgencyProgress || 0).toLocaleString()}
+                          ${(agency?.totalCoin || 0).toLocaleString()}
                         </div>
-                        <div className="text-text-muted text-xs">Income</div>
+                        <div className="text-text-muted text-xs">Total Coin</div>
                       </div>
                     </div>
                     <div className="flex items-center justify-between pt-3 border-t border-dark-border">
                       <div className="text-text-muted text-xs">
-                        <span className="text-white font-medium">{agencyHostStats?.totalHosts || 0}</span> Members
+                        <span className="text-white font-medium">
+                          {selectedAgencyId === agency._id ? agencyHostStats?.totalHosts || 0 : 0}
+                        </span>{" "}
+                        Hosts
                       </div>
-                      <button className="text-info text-xs font-medium hover:text-info/80">
-                        View Details →
+                      <button
+                        className="text-info text-xs font-medium hover:text-info/80"
+                        onClick={() => setSelectedAgencyId(agency._id)}
+                      >
+                        {selectedAgencyId === agency._id ? "Selected" : "View Details →"}
                       </button>
                     </div>
                   </div>
@@ -221,7 +242,7 @@ export default function AgencyDashboard() {
                 </tr>
               </thead>
               <tbody>
-                {agencies.length === 0 ? (
+                {filteredAgencies.length === 0 ? (
                   <tr>
                     <td colSpan="4" className="px-5 py-12 text-center text-text-muted text-sm">
                       <svg width="48" height="48" className="mx-auto mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -231,7 +252,7 @@ export default function AgencyDashboard() {
                     </td>
                   </tr>
                 ) : (
-                  agencies.map((agency) => (
+                  filteredAgencies.map((agency) => (
                     <tr
                       key={agency._id}
                       className="border-b border-dark-border hover:bg-white/5 transition-colors"
@@ -243,11 +264,11 @@ export default function AgencyDashboard() {
                           <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                           </svg>
-                          {agencyHostStats?.totalHosts || 0}
+                          {selectedAgencyId === agency._id ? agencyHostStats?.totalHosts || 0 : 0}
                         </span>
                       </td>
                       <td className="px-5 py-4 text-sm text-danger font-semibold text-right">
-                        ${(agencyHostStats?.currentAgencyProgress || 0).toLocaleString()}
+                        ${(agency?.totalCoin || 0).toLocaleString()}
                       </td>
                     </tr>
                   ))

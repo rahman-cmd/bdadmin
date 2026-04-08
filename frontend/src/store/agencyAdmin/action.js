@@ -76,7 +76,7 @@ export const createAgency = (data) => (dispatch) => {
   const url = bdAdminId 
     ? `bdAdmin/agency/create?key=${key}&bdAdminId=${bdAdminId}`
     : `bdAdmin/agency/create?key=${key}`;
-  axios
+  return axios
     .post(url, data)
     .then((res) => {
       if (res.data.status) {
@@ -101,12 +101,13 @@ export const updateAgencyName = (agencyId, name) => (dispatch) => {
   const url = bdAdminId 
     ? `bdAdmin/agency/updateName?key=${key}&bdAdminId=${bdAdminId}`
     : `bdAdmin/agency/updateName?key=${key}`;
-  axios
+  return axios
     .patch(url, { agencyId, name })
     .then((res) => {
       if (res.data.status) {
         Toast("success", "Agency name updated successfully");
         dispatch({ type: UPDATE_AGENCY_NAME, payload: res.data.data });
+        dispatch({ type: CLOSE_AGENCY_DIALOG });
         // Refresh agency list
         dispatch(getBDAgencies(1, 20));
       } else {

@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useLocation, useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import { getBDAgencyHistory } from "../store/agencyAdmin/action";
 import DateRangePicker from "react-bootstrap-daterangepicker";
 
 export default function AgencyHistory() {
   const dispatch = useDispatch();
-  const location = useLocation();
-  const navigate = useNavigate();
   const { agencyHistory, agencyHistoryTotal } = useSelector((state) => state.agencyAdmin);
   const [data, setData] = useState([]);
   const [activePage, setActivePage] = useState(1);
@@ -17,8 +14,6 @@ export default function AgencyHistory() {
   const [endDate, setEndDate] = useState(dayjs().endOf("month").toDate());
   const [sDate, setsDate] = useState("ALL");
   const [eDate, seteDate] = useState("ALL");
-  const isDashboard = location.pathname === "/bdadmin/dashboard";
-
   const startAllDate = "1970-01-01";
   const endAllDate = dayjs().format("YYYY-MM-DD");
 
@@ -58,6 +53,7 @@ export default function AgencyHistory() {
   // Simple pagination component
   const Pagination = () => {
     const totalPages = Math.ceil(agencyHistoryTotal / rowsPerPage);
+    if (totalPages <= 0) return null;
     const pages = [];
     for (let i = 1; i <= totalPages; i++) {
       pages.push(i);
