@@ -264,13 +264,18 @@ export default function AgencyDialog() {
         fullWidth
         maxWidth="sm"
         sx={{ 
-          maxWidth: { xs: "95%", sm: "500px", md: "600px" }, 
+          maxWidth: { xs: "100%", sm: "500px", md: "600px" }, 
           margin: "0 auto",
           "& .MuiDialog-paper": {
-            margin: { xs: "16px", sm: "32px" },
+            margin: { xs: "8px", sm: "32px" },
             width: "100%",
+            maxWidth: "100%",
+            maxHeight: {
+              xs: "calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 16px)",
+              sm: "90vh",
+            },
             background: "#1f1f2b",
-            borderRadius: "24px",
+            borderRadius: { xs: "20px", sm: "24px" },
             border: "1px solid rgba(255, 255, 255, 0.1)",
             boxShadow: "0 20px 60px rgba(0, 0, 0, 0.5)",
           },
@@ -344,6 +349,11 @@ export default function AgencyDialog() {
                           isSearchable
                           isClearable
                           blurInputOnSelect
+                          menuPosition="fixed"
+                          menuPortalTarget={
+                            typeof document !== "undefined" ? document.body : null
+                          }
+                          menuShouldScrollIntoView={false}
                           getOptionLabel={(option) =>
                             option?.uniqueId != null ? String(option.uniqueId) : ""
                           }
@@ -415,9 +425,17 @@ export default function AgencyDialog() {
                               backgroundColor: "#1f1f2b",
                               border: "1px solid #262635",
                               borderRadius: "12px",
-                              maxHeight: "300px",
+                              maxHeight: "min(50vh, 300px)",
                               overflowY: "auto",
-                              zIndex: 9999,
+                              zIndex: 10050,
+                            }),
+                            menuPortal: (base) => ({
+                              ...base,
+                              zIndex: 10050,
+                            }),
+                            menuList: (provided) => ({
+                              ...provided,
+                              maxHeight: "min(50vh, 280px)",
                             }),
                             option: (provided, state) => ({
                               ...provided,

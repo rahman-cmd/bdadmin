@@ -60,43 +60,48 @@ export default function AgencyHistory() {
     }
 
     return (
-      <div className="flex justify-center items-center gap-2 mt-5 flex-wrap">
-        <button
-          onClick={() => handlePageChange(activePage - 1)}
-          disabled={activePage === 1}
-          className={`px-3 md:px-4 py-2 border border-dark-border rounded-custom text-xs md:text-sm transition-colors ${
-            activePage === 1
-              ? "bg-gray-200 cursor-not-allowed text-gray-500"
-              : "bg-dark-card hover:bg-dark-border cursor-pointer text-text"
-          }`}
-        >
-          Previous
-        </button>
-        {pages.slice(Math.max(0, activePage - 3), activePage + 2).map((page) => (
+      <div className="flex flex-col sm:flex-row sm:flex-wrap justify-center items-stretch sm:items-center gap-3 mt-5 w-full min-w-0 max-w-full">
+        <div className="flex flex-wrap justify-center items-center gap-2 w-full sm:w-auto overflow-x-auto pb-1">
           <button
-            key={page}
-            onClick={() => handlePageChange(page)}
-            className={`px-3 md:px-4 py-2 border border-dark-border rounded-custom text-xs md:text-sm transition-colors ${
-              activePage === page
-                ? "bg-danger text-white"
-                : "bg-dark-card hover:bg-dark-border text-text"
+            type="button"
+            onClick={() => handlePageChange(activePage - 1)}
+            disabled={activePage === 1}
+            className={`!min-h-0 !min-w-0 min-h-10 px-3 md:px-4 py-2 border border-dark-border rounded-xl text-xs md:text-sm transition-colors ${
+              activePage === 1
+                ? "bg-dark-card/50 cursor-not-allowed text-text-muted opacity-60"
+                : "bg-dark-card hover:bg-dark-border cursor-pointer text-text"
             }`}
           >
-            {page}
+            Previous
           </button>
-        ))}
-        <button
-          onClick={() => handlePageChange(activePage + 1)}
-          disabled={activePage === totalPages}
-          className={`px-3 md:px-4 py-2 border border-dark-border rounded-custom text-xs md:text-sm transition-colors ${
-            activePage === totalPages
-              ? "bg-gray-200 cursor-not-allowed text-gray-500"
-              : "bg-dark-card hover:bg-dark-border cursor-pointer text-text"
-          }`}
-        >
-          Next
-        </button>
-        <span className="text-xs md:text-sm text-text-muted ml-3">
+          {pages.slice(Math.max(0, activePage - 3), activePage + 2).map((page) => (
+            <button
+              type="button"
+              key={page}
+              onClick={() => handlePageChange(page)}
+              className={`!min-h-0 !min-w-0 min-h-10 px-3 md:px-4 py-2 border border-dark-border rounded-xl text-xs md:text-sm transition-colors shrink-0 ${
+                activePage === page
+                  ? "bg-danger text-white"
+                  : "bg-dark-card hover:bg-dark-border text-text"
+              }`}
+            >
+              {page}
+            </button>
+          ))}
+          <button
+            type="button"
+            onClick={() => handlePageChange(activePage + 1)}
+            disabled={activePage === totalPages}
+            className={`!min-h-0 !min-w-0 min-h-10 px-3 md:px-4 py-2 border border-dark-border rounded-xl text-xs md:text-sm transition-colors ${
+              activePage === totalPages
+                ? "bg-dark-card/50 cursor-not-allowed text-text-muted opacity-60"
+                : "bg-dark-card hover:bg-dark-border cursor-pointer text-text"
+            }`}
+          >
+            Next
+          </button>
+        </div>
+        <span className="text-xs md:text-sm text-text-muted text-center sm:text-left sm:ml-0 w-full sm:w-auto">
           Showing {(activePage - 1) * rowsPerPage + 1} to {Math.min(activePage * rowsPerPage, agencyHistoryTotal)} of{" "}
           {agencyHistoryTotal}
         </span>
@@ -105,7 +110,7 @@ export default function AgencyHistory() {
   };
 
   return (
-    <div className="min-h-screen text-white pb-4 md:pb-0">
+    <div className="min-h-screen text-white pb-4 md:pb-0 w-full min-w-0 max-w-full overflow-x-hidden">
       {/* Header */}
       <div className="mb-6 md:mb-8">
         <h1 className="text-2xl md:text-3xl font-bold text-white mb-2 bg-gradient-to-r from-danger via-info to-danger bg-clip-text text-transparent">

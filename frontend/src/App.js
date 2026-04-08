@@ -52,7 +52,7 @@ function App() {
   }, [location.search, dispatch, navigate, isAuth]); // Only depend on location.search, not full location
 
   return (
-    <div className="App">
+    <div className="App min-h-[100dvh] w-full max-w-[100vw] overflow-x-hidden selection:bg-danger/30 selection:text-white">
       <Suspense fallback={""}>
         <Routes>
           {/* Protected routes - similar to agency */}

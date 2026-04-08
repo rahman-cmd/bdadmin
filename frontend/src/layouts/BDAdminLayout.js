@@ -11,12 +11,10 @@ const DashboardIcon = (
     strokeLinecap="round"
     strokeLinejoin="round"
     className="w-5 h-5 md:w-6 md:h-6"
-    height="1.5em"
-    width="1.5em"
-    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden
   >
-    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+    <polyline points="9 22 9 12 15 12 15 22" />
   </svg>
 );
 
@@ -29,14 +27,12 @@ const AgencyIcon = (
     strokeLinecap="round"
     strokeLinejoin="round"
     className="w-5 h-5 md:w-6 md:h-6"
-    height="1.5em"
-    width="1.5em"
-    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden
   >
-    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
-    <circle cx="9" cy="7" r="4"></circle>
-    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
-    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+    <circle cx="9" cy="7" r="4" />
+    <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+    <path d="M16 3.13a4 4 0 0 1 0 7.75" />
   </svg>
 );
 
@@ -49,12 +45,10 @@ const HistoryIcon = (
     strokeLinecap="round"
     strokeLinejoin="round"
     className="w-5 h-5 md:w-6 md:h-6"
-    height="1.5em"
-    width="1.5em"
-    xmlns="http://www.w3.org/2000/svg"
+    aria-hidden
   >
-    <circle cx="12" cy="12" r="10"></circle>
-    <polyline points="12 6 12 12 16 14"></polyline>
+    <circle cx="12" cy="12" r="10" />
+    <polyline points="12 6 12 12 16 14" />
   </svg>
 );
 
@@ -73,73 +67,82 @@ export default function BDAdminLayout() {
     const isActive = location.pathname === path;
     return (
       <button
+        type="button"
         key={label}
         onClick={() => navigate(path)}
         className={`
-          border-none flex items-center font-medium cursor-pointer transition-all duration-200 ease-in-out
-          ${isSidebar 
-            ? 'flex-row justify-start w-full px-4 py-3 rounded-xl text-base mb-1' 
-            : 'flex-col justify-center w-full py-2 px-1 text-[10px] active:scale-95'
+          border-none flex items-center font-medium cursor-pointer transition-all duration-200 ease-out
+          ${isSidebar
+            ? "flex-row justify-start w-full px-4 py-3 rounded-xl text-base mb-1.5"
+            : "flex-col justify-center min-h-[52px] min-w-[64px] py-2 px-1 text-[10px] active:scale-95"
           }
-          ${isActive 
+          ${isActive
             ? isSidebar
-              ? 'bg-gradient-to-r from-danger/20 to-info/20 text-white shadow-lg' 
-              : 'text-danger'
+              ? "bg-gradient-to-r from-danger/25 to-info/20 text-white shadow-[0_0_24px_-8px_rgba(232,83,143,0.35)] ring-1 ring-white/10"
+              : "text-danger"
             : isSidebar
-              ? 'bg-transparent text-[rgba(234,240,255,0.7)] hover:bg-white/10 hover:text-white' 
-              : 'text-[rgba(234,240,255,0.6)]'
+              ? "bg-transparent text-white/75 hover:bg-white/10 hover:text-white"
+              : "text-white/55"
           }
         `}
       >
-        <span className={isActive && !isSidebar ? 'text-danger' : ''}>{icon}</span>
-        <span className={`${isSidebar ? 'text-sm ml-3' : 'text-[10px] mt-1 font-medium'} truncate`}>{label}</span>
+        <span className={isActive && !isSidebar ? "text-danger" : ""}>{icon}</span>
+        <span
+          className={`${isSidebar ? "text-sm ml-3 font-medium" : "text-[10px] mt-1 font-medium"} truncate max-w-full`}
+        >
+          {label}
+        </span>
       </button>
     );
   };
 
   return (
-    <div className="flex min-h-screen bg-gradient-to-br from-dark via-[#1a1a2e] to-dark">
-      {/* Sidebar (desktop only) */}
-      <div className="hidden md:flex fixed left-0 top-0 h-screen w-[280px] bg-gradient-to-b from-sidebar/95 to-sidebar backdrop-blur-xl border-r border-white/10 p-6 flex-col overflow-y-auto z-[1000] scrollbar-sidebar shadow-2xl">
-        <div className="mb-8">
-          <h2 className="text-danger text-2xl font-bold mb-2 flex items-center justify-center py-2 bg-gradient-to-r from-danger to-info bg-clip-text text-transparent">
+    <div className="flex min-h-[100dvh] min-h-screen w-full max-w-[100vw] overflow-x-hidden bg-night-950">
+      {/* Desktop sidebar */}
+      <aside className="hidden md:flex fixed left-0 top-0 z-[1000] h-screen w-[280px] flex-col overflow-y-auto bg-sidebar-mesh backdrop-blur-2xl border-r border-white/10 shadow-panel p-6 [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-white/5 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:bg-white/20">
+        <div className="mb-8 rounded-2xl border border-white/10 bg-white/5 p-5 ring-1 ring-white/5 backdrop-blur-sm">
+          <h2 className="text-center text-xl font-bold tracking-tight bg-gradient-to-r from-danger via-info to-danger bg-clip-text text-transparent">
             BD Admin
           </h2>
-          <div className="h-0.5 bg-gradient-to-r from-transparent via-danger/50 to-transparent"></div>
+          <p className="mt-1 text-center text-[11px] text-text-muted">Control panel</p>
+          <div className="mx-auto mt-3 h-px w-16 bg-gradient-to-r from-transparent via-danger/60 to-transparent" />
         </div>
-        
+
         {bdAdmin && bdAdmin.name && (
-          <div className="p-4 mb-6 bg-gradient-to-br from-white/10 to-white/5 rounded-2xl text-xs text-[#EAF0FF] backdrop-blur-sm border border-white/10 shadow-lg">
-            <div className="flex items-center gap-2 mb-2">
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-danger to-info flex items-center justify-center text-white font-bold text-sm">
-                {bdAdmin.name?.charAt(0)?.toUpperCase() || 'A'}
+          <div className="mb-6 rounded-2xl border border-white/10 bg-gradient-to-br from-white/10 to-white/[0.03] p-4 text-xs text-[#EAF0FF] shadow-inner backdrop-blur-md">
+            <div className="flex items-center gap-3">
+              <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-danger to-info text-sm font-bold text-white shadow-glow">
+                {bdAdmin.name?.charAt(0)?.toUpperCase() || "A"}
               </div>
-              <div className="flex-1 min-w-0">
-                <div className="font-bold text-sm mb-1 truncate">{bdAdmin.name}</div>
+              <div className="min-w-0 flex-1">
+                <div className="truncate text-sm font-semibold text-white">{bdAdmin.name}</div>
                 {bdAdmin.user && (
-                  <div className="text-text-muted text-[10px] truncate">ID: {bdAdmin.user.uniqueId || bdAdmin.bdId}</div>
+                  <div className="truncate text-[10px] text-text-muted">
+                    ID: {bdAdmin.user.uniqueId || bdAdmin.bdId}
+                  </div>
                 )}
               </div>
             </div>
           </div>
         )}
-        
-        <div className="space-y-1">
-          {navItems.map((nav) => item(nav, true))}
-        </div>
-      </div>
 
-      {/* Page content */}
-      <div className="flex-1 w-full md:ml-[280px] pb-20 md:pb-5 text-[#EAF0FF] overflow-x-hidden overflow-y-auto min-h-screen bg-gradient-to-br from-dark via-[#1a1a2e] to-dark transition-all">
-        <div className="p-4 md:p-6 lg:p-8 min-h-[calc(100vh-80px)] transition-all">
+        <nav className="space-y-1">{navItems.map((nav) => item(nav, true))}</nav>
+      </aside>
+
+      {/* Main */}
+      <div className="flex min-h-[100dvh] min-h-screen w-full min-w-0 flex-1 overflow-x-hidden overflow-y-auto bg-mesh md:ml-[280px] pb-[calc(5.75rem+env(safe-area-inset-bottom,0px))] md:pb-8">
+        <div className="mx-auto w-full max-w-[1600px] px-3 pt-[max(0.5rem,env(safe-area-inset-top,0px))] pb-4 sm:px-4 md:px-6 md:pt-6 lg:px-8 lg:pt-8">
           <Outlet />
         </div>
       </div>
 
-      {/* Bottom Navigation Bar (mobile only) - Modern App-like Design */}
-      <div className="fixed bottom-0 left-0 right-0 bg-sidebar/95 backdrop-blur-xl border-t border-white/10 py-2 z-[1000] flex md:hidden justify-around items-center shadow-[0_-4px_20px_rgba(0,0,0,0.3)] safe-area-pb">
+      {/* Mobile bottom nav */}
+      <nav
+        className="fixed bottom-0 left-0 right-0 z-[1000] flex max-w-[100vw] items-center justify-around border-t border-white/10 bg-[#1a0d2e]/92 px-1 py-1.5 shadow-nav backdrop-blur-2xl md:hidden rounded-t-2xl pb-[max(0.5rem,env(safe-area-inset-bottom,0px))]"
+        aria-label="Main navigation"
+      >
         {navItems.map((nav) => item(nav, false))}
-      </div>
+      </nav>
     </div>
   );
 }

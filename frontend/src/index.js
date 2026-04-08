@@ -18,9 +18,12 @@ import {
 } from "./store/spinner/types";
 import Spinner from "./pages/Spinner";
 import { BrowserRouter } from "react-router-dom";
-
-// CSS
-import "./assets/css/custom.css";
+import { ThemeProvider } from "@mui/material/styles";
+import CssBaseline from "@mui/material/CssBaseline";
+import GlobalStyles from "@mui/material/GlobalStyles";
+import { bdAdminMuiTheme } from "./muiTheme";
+import { vendorGlobalStyles } from "./vendorGlobalStyles";
+import "bootstrap-daterangepicker/daterangepicker.css";
 
 axios.defaults.baseURL = baseURL;
 if (key) {
@@ -53,12 +56,16 @@ axios.interceptors.response.use(
 
 ReactDOM.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <Provider store={store}>
-        <App />
-        <Spinner />
-      </Provider>
-    </BrowserRouter>
+    <ThemeProvider theme={bdAdminMuiTheme}>
+      <CssBaseline enableColorScheme />
+      <GlobalStyles styles={vendorGlobalStyles} />
+      <BrowserRouter>
+        <Provider store={store}>
+          <App />
+          <Spinner />
+        </Provider>
+      </BrowserRouter>
+    </ThemeProvider>
   </React.StrictMode>,
   document.getElementById("root")
 );

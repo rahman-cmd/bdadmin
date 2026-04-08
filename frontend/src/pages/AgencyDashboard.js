@@ -107,7 +107,7 @@ export default function AgencyDashboard() {
   ];
 
   return (
-    <div className="min-h-screen text-white pb-4 md:pb-0">
+    <div className="min-h-screen text-white pb-4 md:pb-0 w-full min-w-0 max-w-full overflow-x-hidden">
 
       {/* Header */}
       <div className="mb-6 md:mb-8">
@@ -122,7 +122,7 @@ export default function AgencyDashboard() {
         {metricCards.map((card, index) => (
           <div
             key={index}
-            className={`bg-gradient-to-br ${card.gradient} backdrop-blur-sm rounded-2xl p-4 md:p-5 border ${card.borderColor} shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]`}
+            className={`group bg-gradient-to-br ${card.gradient} rounded-2xl p-4 md:p-5 border ${card.borderColor} shadow-panel ring-1 ring-white/5 backdrop-blur-sm transition-all duration-300 hover:ring-white/10 md:hover:scale-[1.02] md:hover:shadow-glow active:scale-[0.99]`}
           >
             <div className="flex items-center justify-between mb-3">
               <span className="text-2xl md:text-3xl">{card.icon}</span>
@@ -184,7 +184,7 @@ export default function AgencyDashboard() {
         </div>
 
         {/* Table - Mobile Responsive */}
-        <div className="bg-dark-card rounded-2xl border border-dark-border overflow-hidden shadow-xl">
+        <div className="bg-dark-card/90 rounded-2xl border border-dark-border/80 overflow-hidden shadow-panel ring-1 ring-white/5 backdrop-blur-sm">
           {/* Mobile Card View */}
           <div className="block md:hidden">
             {filteredAgencies.length === 0 ? (

@@ -16,12 +16,12 @@ const Pagination = (props) => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mt-4">
+    <div className="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mt-4 w-full min-w-0 max-w-full">
       {/* Rows selector */}
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 shrink-0">
         <span className="text-text text-sm md:text-base">Rows</span>
         <select
-          className="bg-dark-card border border-dark-border text-text text-sm md:text-base px-3 py-1.5 md:py-2 rounded-custom focus:outline-none focus:ring-0 cursor-pointer"
+          className="!min-h-0 !min-w-0 min-h-10 bg-dark-card border border-dark-border text-text text-sm md:text-base px-3 py-1.5 md:py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-danger/30 cursor-pointer max-w-full"
           value={rowsPerPage}
           onChange={(e) => handleRowsChange(e.target.value)}
         >
@@ -38,12 +38,13 @@ const Pagination = (props) => {
       </div>
 
       {/* Pagination controls */}
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center justify-center md:justify-end gap-1 sm:gap-2 w-full min-w-0 overflow-x-auto pb-1 md:pb-0 -mx-1 px-1">
         {/* First Page */}
         <button
+          type="button"
           onClick={() => handlePage(1)}
           disabled={activePage === 1}
-          className={`p-2 rounded transition-colors ${
+          className={`!min-h-0 !min-w-0 h-9 w-9 shrink-0 p-2 rounded-lg transition-colors ${
             activePage === 1
               ? "text-text-muted cursor-not-allowed opacity-50"
               : "text-text hover:text-white hover:bg-white/10 cursor-pointer"
@@ -67,9 +68,10 @@ const Pagination = (props) => {
 
         {/* Previous Page */}
         <button
+          type="button"
           onClick={() => handlePage(activePage - 1)}
           disabled={activePage === 1}
-          className={`p-2 rounded transition-colors ${
+          className={`!min-h-0 !min-w-0 h-9 w-9 shrink-0 p-2 rounded-lg transition-colors ${
             activePage === 1
               ? "text-text-muted cursor-not-allowed opacity-50"
               : "text-text hover:text-white hover:bg-white/10 cursor-pointer"
@@ -97,9 +99,10 @@ const Pagination = (props) => {
 
         {/* Next Page */}
         <button
+          type="button"
           onClick={() => handlePage(activePage + 1)}
           disabled={activePage >= totalPages}
-          className={`p-2 rounded transition-colors ${
+          className={`!min-h-0 !min-w-0 h-9 w-9 shrink-0 p-2 rounded-lg transition-colors ${
             activePage >= totalPages
               ? "text-text-muted cursor-not-allowed opacity-50"
               : "text-text hover:text-white hover:bg-white/10 cursor-pointer"
@@ -122,9 +125,10 @@ const Pagination = (props) => {
 
         {/* Last Page */}
         <button
+          type="button"
           onClick={() => handlePage(totalPages)}
           disabled={activePage >= totalPages}
-          className={`p-2 rounded transition-colors ${
+          className={`!min-h-0 !min-w-0 h-9 w-9 shrink-0 p-2 rounded-lg transition-colors ${
             activePage >= totalPages
               ? "text-text-muted cursor-not-allowed opacity-50"
               : "text-text hover:text-white hover:bg-white/10 cursor-pointer"
